@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
 
           <div className="mt-6">
             <button
-              onClick={() => navigate("/document")}
+              onClick={() => navigate("/documents")}
               className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Document Management

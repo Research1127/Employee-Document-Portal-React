@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import api from "../api/axios"; // Axios instance for API calls
 import type { Document } from "../types/document";
 import type { PaginatedResponse } from "../types/PaginatedResponse";
+import { useNavigate } from "react-router-dom";
 
 const Document: React.FC = () => {
+  const navigate = useNavigate();
   const [response, setResponse] = useState<PaginatedResponse<Document> | null>(
     null,
   );
@@ -63,11 +65,19 @@ const Document: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6">Document Management</h1>
-
+      {/* White Card Container */}
       <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          Filter Documents
-        </h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            FILTER DOCUMENTS
+          </h2>
+          <button
+            onClick={() => navigate("/documents/upload")}
+            className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Upload Document
+          </button>
+        </div>
         {/* Search Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
