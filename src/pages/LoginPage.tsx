@@ -54,7 +54,7 @@ const LoginPage = () => {
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label
-              htmlhtmlFor="email"
+              htmlFor="email"
               className="block text-sm/6 font-medium text-black-400"
             >
               Email address
@@ -76,7 +76,7 @@ const LoginPage = () => {
           <div>
             <div className="flex items-center justify-between">
               <label
-                htmlhtmlFor="password"
+                htmlFor="password"
                 className="block text-sm/6 font-medium text-black-400"
               >
                 Password

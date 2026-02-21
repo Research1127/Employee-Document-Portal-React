@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
-import type {
-  Document,
-  Department,
-  DocumentCategory,
-  Uploader,
-} from "../types/document";
+import type { Document } from "../types/document";
 
 const ViewDocument: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -60,7 +55,7 @@ const ViewDocument: React.FC = () => {
   if (error) return <p className="text-red-500">{error}</p>;
   return (
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-8">
-      <div className="mx-auto max-w-screen-lg px-4 2xl:px-0">
+      <div className="mx-auto max-w-5xl px-4 2xl:px-0">
         <nav className="mb-4 flex" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li className="inline-flex items-center">
@@ -361,7 +356,7 @@ const ViewDocument: React.FC = () => {
             {/* Edit Button */}
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 sm:w-auto"
+              className="inline-flex items-center justify-center rounded-lg bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 sm:w-auto"
             >
               Edit Document
             </button>

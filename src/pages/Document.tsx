@@ -121,7 +121,7 @@ const Document: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             FILTER DOCUMENTS
           </h2>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleDownloadCurrentPage}
               className="rounded-lg bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-green-500"

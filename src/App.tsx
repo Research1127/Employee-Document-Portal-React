@@ -1,43 +1,36 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Document from "./pages/Document";
 import UploadDocument from "./pages/UploadDocument";
 import ViewDocument from "./pages/ViewDocument";
-import { Navigate } from "react-router-dom";
 
-const App: React.FC = () => {
-  const isAuthenticated = !!localStorage.getItem("accessToken");
+import Layout from "./layouts/Layout";
+import ProtectedRoute from "./routes/ProtectedRoute";
+
+function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        {/* Public Route */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Protected Routes */}
         <Route
-          path="/dashboard"
           element={
-            isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
           }
-        />
-        <Route
-          path="/documents"
-          element={isAuthenticated ? <Document /> : <Navigate to="/" replace />}
-        />
-        <Route
-          path="/documents/upload"
-          element={
-            isAuthenticated ? <UploadDocument /> : <Navigate to="/" replace />
-          }
-        />
-        <Route
-          path="/documents/:id"
-          element={
-            isAuthenticated ? <ViewDocument /> : <Navigate to="/" replace />
-          }
-        />
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/documents" element={<Document />} />
+          <Route path="/documents/upload" element={<UploadDocument />} />
+          <Route path="/documents/:id" element={<ViewDocument />} />
+        </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;
