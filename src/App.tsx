@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Document from "./pages/Document";
 import UploadDocument from "./pages/UploadDocument";
+import ViewDocument from "./pages/ViewDocument";
 import { Navigate } from "react-router-dom";
 
 const App: React.FC = () => {
@@ -26,6 +27,12 @@ const App: React.FC = () => {
           path="/documents/upload"
           element={
             isAuthenticated ? <UploadDocument /> : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/documents/:id"
+          element={
+            isAuthenticated ? <ViewDocument /> : <Navigate to="/" replace />
           }
         />
       </Routes>

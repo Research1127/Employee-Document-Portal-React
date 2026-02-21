@@ -13,4 +13,23 @@ export interface Document {
   download_count: number;
   created_at: string;
   updated_at: string;
+  department?: Department; 
+  category?: DocumentCategory;
+  uploader?: Uploader;
+}
+
+export interface Department {
+  id: number;
+  name: string;
+}
+
+export interface DocumentCategory {
+  id: number;
+  title: string;
+}
+
+export interface Uploader{
+  id: number;
+  name: string;
+  email: string;
 }

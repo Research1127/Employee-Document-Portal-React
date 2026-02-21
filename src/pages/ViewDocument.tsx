@@ -1,0 +1,384 @@
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import api from "../api/axios";
+import type {
+  Document,
+  Department,
+  DocumentCategory,
+  Uploader,
+} from "../types/document";
+
+const ViewDocument: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const [document, setDocument] = useState<Document | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!id) return;
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this document?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setDeleting(true);
+      await api.delete(`/documents/${id}`);
+
+      alert("Document deleted successfully!");
+      navigate("/documents");
+    } catch (error) {
+      alert("Failed to delete document.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchDocument = async () => {
+      try {
+        const response = await api.get(`/documents/${id}`);
+        setDocument(response.data);
+      } catch (err: any) {
+        setError("Failed to fetch document");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchDocument();
+    }
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  return (
+    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-8">
+      <div className="mx-auto max-w-screen-lg px-4 2xl:px-0">
+        <nav className="mb-4 flex" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <li className="inline-flex items-center">
+              <Link
+                to="/dashboard"
+                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-white"
+              >
+                <svg
+                  className="me-2 h-4 w-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"
+                  />
+                </svg>
+                Home
+              </Link>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg
+                  className="mx-1 h-4 w-4 text-gray-400 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m9 5 7 7-7 7"
+                  />
+                </svg>
+                <Link
+                  to="/documents"
+                  className="ms-1 text-sm font-medium text-gray-700 hover:text-primary-600 dark:text-gray-400 dark:hover:text-white md:ms-2"
+                >
+                  Document Page
+                </Link>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center">
+                <svg
+                  className="mx-1 h-4 w-4 text-gray-400 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m9 5 7 7-7 7"
+                  />
+                </svg>
+                <span className="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400 md:ms-2">
+                  View Document
+                </span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl md:mb-6">
+          Document Details
+        </h2>
+        <div className="grid grid-cols-2 gap-6 border-b border-t border-gray-200 py-4 dark:border-gray-700 md:py-8 lg:grid-cols-4 xl:gap-16">
+          <div>
+            <svg
+              className="mb-2 h-8 w-8 text-gray-400 dark:text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"
+              />
+            </svg>
+            <h3 className="mb-2 text-gray-500 dark:text-gray-400">
+              Department
+            </h3>
+            <span className="flex items-center text-2xl font-bold text-gray-900 dark:text-white">
+              {document?.department?.name}
+            </span>
+          </div>
+          <div>
+            <svg
+              className="mb-2 h-8 w-8 text-gray-400 dark:text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-width="2"
+                d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"
+              />
+            </svg>
+            <h3 className="mb-2 text-gray-500 dark:text-gray-400">
+              Document Category
+            </h3>
+            <span className="flex items-center text-2xl font-bold text-gray-900 dark:text-white">
+              {document?.category?.title}
+            </span>
+          </div>
+          <div>
+            <svg
+              className="mb-2 h-8 w-8 text-gray-400 dark:text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
+              />
+            </svg>
+            <h3 className="mb-2 text-gray-500 dark:text-gray-400">
+              Access Level
+            </h3>
+            <span className="flex items-center text-2xl font-bold text-gray-900 dark:text-white">
+              {document?.access_level}
+            </span>
+          </div>
+          <div>
+            <svg
+              className="mb-2 h-8 w-8 text-gray-400 dark:text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 9h13a5 5 0 0 1 0 10H7M3 9l4-4M3 9l4 4"
+              />
+            </svg>
+            <h3 className="mb-2 text-gray-500 dark:text-gray-400">
+              Download Count
+            </h3>
+            <span className="flex items-center text-2xl font-bold text-gray-900 dark:text-white">
+              {document?.download_count}
+            </span>
+          </div>
+        </div>
+        <div className="py-4 md:py-8">
+          <div className="mb-4 grid gap-4 sm:grid-cols-2 sm:gap-8 lg:gap-16">
+            <div className="space-y-4">
+              <div className="flex space-x-4">
+                <img
+                  className="h-16 w-16 rounded-lg"
+                  src="https://cdn-icons-png.flaticon.com/512/2991/2991112.png"
+                  alt="avatar"
+                />
+                <div>
+                  <span className="mb-2 inline-block rounded bg-primary-100 px-2.5 py-0.5 text-s font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">
+                    {" "}
+                    Document ID: {document?.id}
+                  </span>
+                  <h2 className="flex items-center text-xl font-bold leading-none text-gray-900 dark:text-white sm:text-2xl">
+                    {document?.title}
+                  </h2>
+                </div>
+              </div>
+              <dl className="">
+                <dt className="font-semibold text-gray-900 dark:text-white">
+                  File Name
+                </dt>
+                <dd className="text-gray-500 dark:text-gray-400">
+                  {document?.file_name}
+                </dd>
+              </dl>
+              <dl>
+                <dt className="font-semibold text-gray-900 dark:text-white">
+                  File Path
+                </dt>
+                <dd className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <svg
+                    className="hidden h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500 lg:inline"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"
+                    />
+                  </svg>
+                  {document?.file_path}
+                </dd>
+              </dl>
+              <dl>
+                <dt className="font-semibold text-gray-900 dark:text-white">
+                  Uploaded By
+                </dt>
+                <dd className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  <svg
+                    className="hidden h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500 lg:inline"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
+                    />
+                  </svg>
+                  {document?.uploader?.name}
+                </dd>
+              </dl>
+            </div>
+            <div className="space-y-4">
+              <dl>
+                <dt className="font-semibold text-gray-900 dark:text-white">
+                  File Size
+                </dt>
+                <dd className="text-gray-500 dark:text-gray-400">
+                  {document?.file_size} bytes
+                </dd>
+              </dl>
+              <dl>
+                <dt className="font-semibold text-gray-900 dark:text-white">
+                  Description
+                </dt>
+                <dd className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                  {document?.description}
+                </dd>
+              </dl>
+              <dl>
+                <dt className="font-semibold text-gray-900 dark:text-white">
+                  Created At
+                </dt>
+                <dd className="text-gray-500 dark:text-gray-400">
+                  {document?.created_at}
+                </dd>
+              </dl>
+              <dl>
+                <dt className="mb-1 font-semibold text-gray-900 dark:text-white">
+                  Updated At
+                </dt>
+                <dd className="text-gray-500 dark:text-gray-400">
+                  {document?.updated_at}
+                </dd>
+              </dl>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            {/* Edit Button */}
+            <button
+              type="button"
+              className="inline-flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 sm:w-auto"
+            >
+              Edit Document
+            </button>
+
+            {/* Delete Button */}
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="inline-flex items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:opacity-50"
+            >
+              {deleting ? "Deleting..." : "Delete Document"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default ViewDocument;

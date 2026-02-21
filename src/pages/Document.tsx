@@ -18,6 +18,56 @@ const Document: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string>("");
   const [search, setSearch] = useState("");
 
+  const handleDownloadCurrentPage = () => {
+    if (!response?.data?.length) return;
+
+    const headers = [
+      "ID",
+      "Title",
+      "Description",
+      "File Name",
+      "File Path",
+      "File Type",
+      "File Size",
+      "Category ID",
+      "Department ID",
+      "Uploaded By",
+      "Access Level",
+      "Download Count",
+      "Created At",
+      "Updated At",
+    ];
+
+    const rows = response.data.map((doc) => [
+      doc.id,
+      doc.title,
+      doc.description,
+      doc.file_name,
+      doc.file_path,
+      doc.file_type,
+      doc.file_size,
+      doc.category_id,
+      doc.department_id,
+      doc.uploaded_by,
+      doc.access_level,
+      doc.download_count,
+      doc.created_at,
+      doc.updated_at,
+    ]);
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers, ...rows].map((row) => row.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "documents_current_page.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     const getDocuments = async () => {
       setLoading(true);
@@ -71,12 +121,21 @@ const Document: React.FC = () => {
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             FILTER DOCUMENTS
           </h2>
-          <button
-            onClick={() => navigate("/documents/upload")}
-            className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            Upload Document
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleDownloadCurrentPage}
+              className="rounded-lg bg-green-600 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-green-500"
+            >
+              Download Current Page
+            </button>
+
+            <button
+              onClick={() => navigate("/documents/upload")}
+              className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-indigo-500"
+            >
+              Upload Document
+            </button>
+          </div>
         </div>
         {/* Search Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -170,6 +229,7 @@ const Document: React.FC = () => {
                 <th className="px-6 py-4">Download Count</th>
                 <th className="px-6 py-4">Created At</th>
                 <th className="px-6 py-4">Updated At</th>
+                <th className="px-6 py-4">Actions</th>
               </tr>
             </thead>
 
@@ -225,6 +285,14 @@ const Document: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 max-w-xs truncate">
                       {document.updated_at}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => navigate(`/documents/${document.id}`)}
+                        className="rounded-lg bg-indigo-500 px-6 py-2 text-sm font-semibold text-white shadow transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))
