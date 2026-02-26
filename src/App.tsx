@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import Document from "./pages/Document";
@@ -12,6 +12,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Default Route */}
+        <Route path="/" element={<Navigate to="/login" />} />
         {/* Public Route */}
         <Route path="/login" element={<LoginPage />} />
 
